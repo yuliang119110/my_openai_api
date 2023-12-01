@@ -19,10 +19,15 @@ def call_baichuan_api(data):
     if "temperature" not in data or not isinstance(data["temperature"], float) or not 0.0 <= data["temperature"] <= 1.0:
         data["temperature"] = 0.3  # 如果 "temperature" 参数不存在，或者其值不是一个在 [0.0, 1.0] 范围内的浮点数，就设置默认值为 0.3
     if "messages" in data:
-        for message in data["messages"]:
-            if "role" in message and message["role"].lower() == "system":
-                message["role"] = "user"  # 如果 "message" 中的 "role" 值为 "system"，则将其值改为 "user" 
-    print("Request data: %s", data)  # 打印请求数据
+       for i, message in enumerate(data["messages"]):
+           if "role" in message and message["role"].lower() == "system":
+               message["role"] = "user"  # 如果 "message" 中的 "role" 值为 "system"，则将其值改为 "user"
+               new_message = {
+                   "role": "assistant",
+                "content": "ok"
+               }
+               data["messages"].insert(i+1, new_message)  # 在 "role" 值为 "system" 的 "message" 下一个插入新的 "message"
+    logging.info("Request data: %s", data)  # 打印请求数据
     response = requests.post(url, headers=headers, data=json.dumps(data))
     logging.info("Response status code: %s", response.status_code)  # 打印响应状态码
     try:

@@ -1,9 +1,11 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 from flask_restx import Api, Resource
 from models import message, llm
 from api import call_baichuan_api, convert_to_openai_format
 import json
+
+import logging
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # 添加 CORS 头
@@ -12,6 +14,15 @@ ns = api.namespace('', description='OpenAI operations')
 
 message_model = api.model('Message', message)
 llm_model = api.model('LLM', llm)
+
+# 设置日志记录
+logging.basicConfig(level=logging.INFO)
+
+@app.after_request
+def log_response_info(response):
+    if not response.direct_passthrough:
+        logging.info('Response: %s', response.get_data(as_text=True))
+    return response
 
 @ns.route('/v1/chat/completions')
 class LlmApi(Resource):
