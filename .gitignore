@@ -1,0 +1,12 @@
+# Python 编译缓存文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter notebook 缓存文件
+.ipynb_checkpoints
+
+# OS 生成的文件
+.DS_Store
+Thumbs.db
