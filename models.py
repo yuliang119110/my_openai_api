@@ -1,5 +1,6 @@
 from flask_restx import fields, Model
 
+
 message = Model('Message', {
     'role': fields.String(required=True, description='The role of the message'),
     'content': fields.String(required=True, description='The content of the message')

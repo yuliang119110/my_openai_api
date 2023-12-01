@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_restx import Api, Resource
-from models import llm
+from models import message, llm
 from api import call_baichuan_api, convert_to_openai_format
 import json
 
@@ -10,9 +10,12 @@ CORS(app, resources={r"/*": {"origins": "*"}})  # 添加 CORS 头
 api = Api(app, version='1.0', title='OpenAI API', description='A simple OpenAI API')
 ns = api.namespace('', description='OpenAI operations')
 
+message_model = api.model('Message', message)
+llm_model = api.model('LLM', llm)
+
 @ns.route('/v1/chat/completions')
 class LlmApi(Resource):
-    @ns.expect(llm)
+    @ns.expect(llm_model)
     def post(self):
         data = api.payload
         response_data = call_baichuan_api(data)
